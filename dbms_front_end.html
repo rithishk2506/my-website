@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pandhi Palace - Online Food Ordering</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .menu-item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .modal {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header / Navigation Bar -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-3xl font-bold text-orange-600">
+                <i class="fas fa-utensils mr-2"></i>Pandhi Palace
+            </a>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#menu" class="text-gray-600 hover:text-orange-600 font-medium">Menu</a>
+                <a href="#" class="text-gray-600 hover:text-orange-600 font-medium">Deals</a>
+                <a href="#" class="text-gray-600 hover:text-orange-600 font-medium">Contact</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="cart-button" class="relative text-gray-600 hover:text-orange-600">
+                    <i class="fas fa-shopping-cart text-2xl"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-3 bg-orange-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                </button>
+                 <button id="login-header-btn" class="bg-orange-600 text-white px-4 py-2 rounded-full hover:bg-orange-700 transition duration-300 font-medium">
+                    Login
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-cover bg-center h-[500px]" style="background-image: url('https://placehold.co/1920x600/e8f5e9/333333?text=Healthy+South+Indian+Food+Spread');">
+        <div class="bg-black bg-opacity-50 h-full flex items-center justify-center">
+            <div class="text-center text-white">
+                <h1 class="text-5xl font-extrabold mb-4 leading-tight">Healthy Plate, Healthy Life</h1>
+                <p class="text-lg mb-8">Healthy Food Happy Life. Authentic South Indian cuisine delivered to your door.</p>
+                <div class="w-full max-w-lg mx-auto">
+                    <div class="relative">
+                        <input type="text" placeholder="Search for a dish..." class="w-full py-3 px-5 rounded-full text-gray-800 focus:outline-none focus:ring-4 focus:ring-orange-300 transition duration-300">
+                        <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-orange-600 text-white px-5 py-2 rounded-full hover:bg-orange-700 transition duration-300">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12">
+        <!-- Menu Section -->
+        <section id="menu">
+            <h2 class="text-4xl font-bold text-center mb-10">Our Grand Menu</h2>
+            <!-- Category Filters -->
+            <div id="category-filters" class="flex justify-center flex-wrap gap-2 md:gap-4 mb-12">
+                <!-- Categories will be dynamically generated here -->
+            </div>
+
+            <!-- Menu Items Grid -->
+            <div id="menu-items" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <!-- Menu items will be dynamically inserted here by JavaScript -->
+            </div>
+        </section>
+    </main>
+    
+    <!-- Shopping Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col">
+        <div class="flex justify-between items-center p-5 border-b">
+            <h3 class="text-2xl font-bold">Your Order</h3>
+            <button id="close-cart" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+        </div>
+        <div id="cart-items" class="flex-grow p-5 overflow-y-auto">
+            <p id="empty-cart-message" class="text-gray-500 text-center mt-8">Your cart is empty.</p>
+        </div>
+        <div class="p-5 border-t bg-gray-50">
+            <div class="flex justify-between font-semibold text-lg mb-2">
+                <span>Subtotal</span>
+                <span id="cart-subtotal">₹0.00</span>
+            </div>
+            <div class="flex justify-between text-gray-600 mb-2">
+                <span>Taxes (5%)</span>
+                <span id="cart-taxes">₹0.00</span>
+            </div>
+            <div class="flex justify-between text-red-600 mb-4">
+                <span>Discount</span>
+                <span id="cart-discount">- ₹0.00</span>
+            </div>
+            <div class="flex justify-between font-bold text-xl mb-6 text-orange-600">
+                <span>To Pay</span>
+                <span id="cart-total">₹0.00</span>
+            </div>
+            <button id="checkout-btn" class="w-full bg-orange-600 text-white py-3 rounded-lg font-bold text-lg hover:bg-orange-700 transition disabled:bg-gray-400">
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+    <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50 opacity-0 transform scale-95">
+        <div class="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold">Login</h2>
+                <button id="close-login-modal" class="text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
+            </div>
+            <form id="login-form">
+                <div class="mb-4">
+                    <label for="phone" class="block text-gray-700 font-medium mb-2">Mobile Number</label>
+                    <input type="tel" id="phone" placeholder="Enter your 10-digit mobile number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
+                    <input type="password" id="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                </div>
+                <button type="submit" class="w-full bg-orange-600 text-white py-3 rounded-lg font-bold text-lg hover:bg-orange-700 transition">Login</button>
+            </form>
+            <p class="text-center text-gray-600 mt-6">
+                Don't have an account? <a href="#" class="text-orange-600 font-semibold hover:underline">Sign up</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-6 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-2xl font-bold text-orange-500 mb-4">Pandhi Palace</h4>
+                    <p class="text-gray-400">Authentic South Indian Cuisine. Quality and tradition you can taste.</p>
+                </div>
+                <div>
+                    <h5 class="font-bold text-lg mb-4">Quick Links</h5>
+                    <ul>
+                        <li class="mb-2"><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li class="mb-2"><a href="#menu" class="text-gray-400 hover:text-white">Menu</a></li>
+                        <li class="mb-2"><a href="#" class="text-gray-400 hover:text-white">My Account</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-bold text-lg mb-4">Contact Us</h5>
+                    <p class="text-gray-400 mb-2"><i class="fas fa-map-marker-alt mr-2"></i>Address : No 7, Arcot Road, VIT opp, Katpadi, Vellore-632019.</p>
+                    <p class="text-gray-400 mb-2"><i class="fas fa-phone mr-2"></i>+91 90439 29767, +91 99405 81851</p>
+                     <p class="text-gray-400 mb-2"><i class="fas fa-phone mr-2"></i>+91 93426 20494, +91 6369 074 542</p>
+                    <p class="text-gray-400"><i class="fas fa-envelope mr-2"></i>mail - pandhipalace.vellore@gmail.com</p>
+                </div>
+                <div>
+                    <h5 class="font-bold text-lg mb-4">Follow Us</h5>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center text-gray-500 border-t border-gray-700 mt-8 pt-6">
+                &copy; 2025 Pandhi Palace. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuData = [
+                // Tamil Nadu Specials
+                { id: 1, name: 'Kothu Parotta', category: 'Tiffin', price: 150.00, description: 'Shredded parotta stir-fried with egg, meat, or vegetables and salna.', image: 'https://placehold.co/400x300/e67e22/ffffff?text=Kothu+Parotta' },
+                { id: 2, name: 'Chettinad Chicken', category: 'Main Course - Non-Veg', price: 280.00, description: 'A fiery, aromatic curry made with a blend of Chettinad spices.', image: 'https://placehold.co/400x300/c0392b/ffffff?text=Chettinad+Chicken' },
+                { id: 3, name: 'Pongal', category: 'Tiffin', price: 90.00, description: 'A savory dish of rice and moong dal, flavored with black pepper and ghee.', image: 'https://placehold.co/400x300/f1c40f/333333?text=Pongal' },
+                { id: 9, name: 'Masala Dosa', category: 'Tiffin', price: 120.00, description: 'Crispy rice crepe filled with spiced potato masala, served with chutney.', image: 'https://placehold.co/400x300/f5a623/333333?text=Masala+Dosa' },
+                { id: 10, name: 'Idly (2 Pcs)', category: 'Tiffin', price: 60.00, description: 'Steamed rice cakes served with sambar and coconut chutney.', image: 'https://placehold.co/400x300/ecf0f1/333333?text=Idly' },
+                
+                // Telangana Specials
+                { id: 5, name: 'Hyderabadi Dum Biryani', category: 'Main Course - Non-Veg', price: 320.00, description: 'Chicken and basmati rice cooked in a sealed pot with rich spices.', image: 'https://placehold.co/400x300/d35400/ffffff?text=Hyderabadi+Biryani' },
+                { id: 6, name: 'Pesarattu (MLA)', category: 'Tiffin', price: 130.00, description: 'A green gram dosa, often stuffed with upma and served with ginger chutney.', image: 'https://placehold.co/400x300/27ae60/ffffff?text=Pesarattu' },
+                { id: 7, name: 'Gongura Mutton', category: 'Main Course - Non-Veg', price: 350.00, description: 'A tangy and spicy mutton curry made with sorrel leaves (gongura).', image: 'https://placehold.co/400x300/8e44ad/ffffff?text=Gongura+Mutton' },
+                { id: 14, name: 'South Indian Meals', category: 'Main Course - Veg', price: 180.00, description: 'A complete meal with rice, sambar, rasam, poriyal, and appalam.', image: 'https://placehold.co/400x300/2ecc71/ffffff?text=Meals' },
+                
+                // Breads & Desserts
+                { id: 12, name: 'Parotta (1 Pc)', category: 'Breads', price: 35.00, description: 'Layered flatbread, soft and flaky, perfect with curries.', image: 'https://placehold.co/400x300/f8c291/333333?text=Parotta' },
+                { id: 15, name: 'Chappathi (2 Pcs)', category: 'Breads', price: 65.00, description: 'Soft unleavened flatbread made from whole wheat flour.', image: 'https://placehold.co/400x300/d2b48c/333333?text=Chappathi' },
+                { id: 16, name: 'Payasam', category: 'Desserts', price: 110.00, description: 'A traditional creamy pudding made with vermicelli, milk, and nuts.', image: 'https://placehold.co/400x300/f39c12/ffffff?text=Payasam' },
+                { id: 17, name: 'Double Ka Meetha', category: 'Desserts', price: 130.00, description: 'A Hyderabadi bread pudding dessert, soaked in saffron and cardamom milk.', image: 'https://placehold.co/400x300/e74c3c/ffffff?text=Double+Ka+Meetha' },
+                { id: 4, name: 'Gulab Jamun', category: 'Desserts', price: 80.00, description: 'Soft, melt-in-your-mouth milk-solid balls in a sweet syrup.', image: 'https://placehold.co/400x300/795548/FFFFFF?text=Gulab+Jamun' },
+            ];
+
+            const cart = [];
+            const TAX_RATE = 0.05; // 5%
+            const DISCOUNT_AMOUNT = 25.00; // Example fixed discount
+
+            const menuItemsContainer = document.getElementById('menu-items');
+            const categoryFilters = document.getElementById('category-filters');
+            const cartButton = document.getElementById('cart-button');
+            const closeCartButton = document.getElementById('close-cart');
+            const cartSidebar = document.getElementById('cart-sidebar');
+            const cartOverlay = document.getElementById('cart-overlay');
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartCountEl = document.getElementById('cart-count');
+            const cartSubtotalEl = document.getElementById('cart-subtotal');
+            const cartTaxesEl = document.getElementById('cart-taxes');
+            const cartDiscountEl = document.getElementById('cart-discount');
+            const cartTotalEl = document.getElementById('cart-total');
+            const emptyCartMessage = document.getElementById('empty-cart-message');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            const loginHeaderBtn = document.getElementById('login-header-btn');
+            const loginModal = document.getElementById('login-modal');
+            const closeLoginModalBtn = document.getElementById('close-login-modal');
+            const loginForm = document.getElementById('login-form');
+
+            function renderMenuItems(items) {
+                menuItemsContainer.innerHTML = '';
+                items.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'menu-item-card bg-white rounded-lg overflow-hidden shadow-lg transition-all duration-300';
+                    card.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-48 object-cover">
+                        <div class="p-5 flex flex-col h-full">
+                            <h3 class="text-xl font-bold mb-2">${item.name}</h3>
+                            <p class="text-gray-600 text-sm mb-4 flex-grow">${item.description}</p>
+                            <div class="flex justify-between items-center mt-auto">
+                                <span class="text-2xl font-bold text-orange-600">₹${item.price.toFixed(2)}</span>
+                                <button data-id="${item.id}" class="add-to-cart-btn bg-orange-100 text-orange-700 font-bold px-4 py-2 rounded-full hover:bg-orange-600 hover:text-white transition-colors">
+                                    Add <i class="fas fa-plus ml-1 text-xs"></i>
+                                </button>
+                            </div>
+                        </div>`;
+                    menuItemsContainer.appendChild(card);
+                });
+            }
+
+            function updateCart() {
+                renderCartItems();
+                updateCartTotals();
+                updateCartCount();
+                emptyCartMessage.style.display = cart.length === 0 ? 'block' : 'none';
+                checkoutBtn.disabled = cart.length === 0;
+            }
+
+            function renderCartItems() {
+                cartItemsContainer.innerHTML = '';
+                if (cart.length === 0) return;
+                cart.forEach(item => {
+                    const cartItemEl = document.createElement('div');
+                    cartItemEl.className = 'flex justify-between items-center mb-4 pb-4 border-b last:border-b-0';
+                    cartItemEl.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
+                            <div>
+                                <h4 class="font-semibold">${item.name}</h4>
+                                <p class="text-gray-500 text-sm">₹${item.price.toFixed(2)}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button data-id="${item.id}" class="cart-quantity-btn cart-decrease w-6 h-6 bg-gray-200 rounded-full font-bold">-</button>
+                            <span class="font-bold w-4 text-center">${item.quantity}</span>
+                            <button data-id="${item.id}" class="cart-quantity-btn cart-increase w-6 h-6 bg-gray-200 rounded-full font-bold">+</button>
+                             <button data-id="${item.id}" class="cart-remove-btn text-red-500 hover:text-red-700 ml-2 text-lg"><i class="fas fa-trash"></i></button>
+                        </div>`;
+                    cartItemsContainer.appendChild(cartItemEl);
+                });
+            }
+
+            function updateCartTotals() {
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const taxes = subtotal * TAX_RATE;
+                const discount = subtotal > 0 ? DISCOUNT_AMOUNT : 0; // Apply discount only if there's a subtotal
+                const total = subtotal + taxes - discount;
+                
+                cartSubtotalEl.textContent = `₹${subtotal.toFixed(2)}`;
+                cartTaxesEl.textContent = `₹${taxes.toFixed(2)}`;
+                cartDiscountEl.textContent = `- ₹${discount.toFixed(2)}`;
+                cartTotalEl.textContent = `₹${total.toFixed(2)}`;
+            }
+
+            function updateCartCount() {
+                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+                cartCountEl.textContent = totalItems;
+            }
+            
+            function createCategoryFilters() {
+                const categories = ['All', ...new Set(menuData.map(item => item.category))];
+                categoryFilters.innerHTML = '';
+                categories.forEach(category => {
+                    const button = document.createElement('button');
+                    button.dataset.category = category;
+                    button.className = 'category-btn bg-white text-gray-600 px-6 py-2 rounded-full hover:bg-orange-100 transition';
+                    button.textContent = category;
+                    if (category === 'All') {
+                        button.classList.add('bg-orange-600', 'text-white');
+                        button.classList.remove('bg-white', 'text-gray-600');
+                    }
+                    categoryFilters.appendChild(button);
+                });
+            }
+
+            function handleCategoryFilter(e) {
+                const button = e.target.closest('.category-btn');
+                if (button) {
+                    const category = button.dataset.category;
+                    document.querySelectorAll('.category-btn').forEach(btn => {
+                        btn.classList.remove('bg-orange-600', 'text-white');
+                        btn.classList.add('bg-white', 'text-gray-600');
+                    });
+                    button.classList.add('bg-orange-600', 'text-white');
+                    button.classList.remove('bg-white', 'text-gray-600');
+                    const filteredItems = category === 'All' 
+                        ? menuData 
+                        : menuData.filter(item => item.category === category);
+                    renderMenuItems(filteredItems);
+                }
+            }
+
+            function openModal(modal) {
+                modal.classList.remove('hidden');
+                setTimeout(() => modal.classList.remove('opacity-0', 'scale-95'), 10);
+            }
+
+            function closeModal(modal) {
+                modal.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+            
+            function addToCart(itemId) {
+                const itemToAdd = menuData.find(item => item.id === parseInt(itemId));
+                const existingItem = cart.find(item => item.id === parseInt(itemId));
+                if (existingItem) existingItem.quantity++;
+                else cart.push({ ...itemToAdd, quantity: 1 });
+                updateCart();
+            }
+
+            function handleCartQuantityChange(itemId, change) {
+                const itemInCart = cart.find(item => item.id === parseInt(itemId));
+                if (itemInCart) {
+                    itemInCart.quantity += change;
+                    if (itemInCart.quantity <= 0) {
+                        cart.splice(cart.indexOf(itemInCart), 1);
+                    }
+                }
+                updateCart();
+            }
+
+            // Event Listeners
+            cartButton.addEventListener('click', () => openModal(cartSidebar));
+            closeCartButton.addEventListener('click', () => closeModal(cartSidebar));
+            cartOverlay.addEventListener('click', () => closeModal(cartSidebar));
+
+            menuItemsContainer.addEventListener('click', e => {
+                const button = e.target.closest('.add-to-cart-btn');
+                if (button) addToCart(button.dataset.id);
+            });
+            
+            cartItemsContainer.addEventListener('click', e => {
+                 const button = e.target.closest('button');
+                 if (!button) return;
+                 const itemId = button.dataset.id;
+                 if (button.classList.contains('cart-increase')) handleCartQuantityChange(itemId, 1);
+                 if (button.classList.contains('cart-decrease')) handleCartQuantityChange(itemId, -1);
+                 if (button.classList.contains('cart-remove-btn')) handleCartQuantityChange(itemId, -Infinity); // Remove all
+            });
+            
+            loginHeaderBtn.addEventListener('click', () => openModal(loginModal));
+            closeLoginModalBtn.addEventListener('click', () => closeModal(loginModal));
+            loginModal.addEventListener('click', e => {
+                if (e.target === loginModal) closeModal(loginModal);
+            });
+            loginForm.addEventListener('submit', e => {
+                e.preventDefault();
+                // This is where you will send data to your backend
+                console.log('Login attempt with phone:', document.getElementById('phone').value);
+                closeModal(loginModal);
+            });
+            
+            categoryFilters.addEventListener('click', handleCategoryFilter);
+
+            // Initial Load
+            createCategoryFilters();
+            renderMenuItems(menuData);
+            updateCart();
+        });
+    </script>
+</body>
+</html>
+
